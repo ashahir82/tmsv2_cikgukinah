@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
@@ -16,8 +17,11 @@ class CourseController extends Controller
     {
         //
         $courses = Course::all();
-        dd($courses);
-        return view('course.index');
+        $courses = Course::orderBy('created_at', 'asc')->get();
+
+        $courses = DB::table('courses')->where('is_Active', 1)->get();
+        // $courses  = Course::where('name', 'Algorithm')->orWhere('is_active', 0)->get();
+        return view('course.index', compact('courses'));
     }
 
     /**
@@ -39,6 +43,15 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         //
+        $course = new Course();
+        $course->name = 'physic';
+        $course->code = 'FTP51';
+        $course->save();
+
+        $course = Course::create([
+            'name' => 'English',
+            'code' => 'EN1234'
+        ]);
     }
 
     /**
@@ -49,7 +62,8 @@ class CourseController extends Controller
      */
     public function show($id)
     {
-        //
+        $course = Course::find($id);
+        return view('course.show', compact('course'));
     }
 
     /**
@@ -61,6 +75,8 @@ class CourseController extends Controller
     public function edit($id)
     {
         //
+        $course = Course::find($id);
+        return view('course.edit', compact('course'));
     }
 
     /**
@@ -73,6 +89,12 @@ class CourseController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $cource = Course::find($id);
+        $cource->name = $request->name;
+        $cource->is_active = 1;
+        $cource->save();
+
+        return redirect()->route('course.index');
     }
 
     /**
@@ -84,5 +106,7 @@ class CourseController extends Controller
     public function destroy($id)
     {
         //
+        $course = Course::find($id);
+        $course->delete();
     }
 }

@@ -47,6 +47,10 @@ Route::prefix('student')->as('student.')->group(function(){
 
 Route::prefix('course')->as('course.')->group(function(){
     Route::get('/', [CourseController::class, 'index'])->name('index');
+    Route::get('/show/{id}',[CourseController::class, 'show'])->name('show');
+    Route::get('/edit/{id}',[CourseController::class, 'edit'])->name('edit');
+
+    Route::post('/update/{id}',[CourseController::class, 'update'])->name('update');
 });
 
 // Route::middleware('auth')->group(function(){
