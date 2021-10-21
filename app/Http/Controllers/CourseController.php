@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
@@ -16,11 +17,15 @@ class CourseController extends Controller
     public function index()
     {
         //
+        $user = Auth::user();
+        // return $user;
         $courses = Course::all();
         $courses = Course::orderBy('created_at', 'asc')->get();
 
         $courses = DB::table('courses')->where('is_Active', 1)->get();
         // $courses  = Course::where('name', 'Algorithm')->orWhere('is_active', 0)->get();
+
+        $courses = Course::with('students')->get();
         return view('course.index', compact('courses'));
     }
 

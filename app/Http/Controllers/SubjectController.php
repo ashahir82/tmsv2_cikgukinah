@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
+use App\Models\subject;
 use Illuminate\Http\Request;
 
-class StudentController extends Controller
+class SubjectController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +15,6 @@ class StudentController extends Controller
     public function index()
     {
         //
-        $students = Student::all();
-        return view('student.index', compact('students'));
     }
 
     /**
@@ -27,7 +25,6 @@ class StudentController extends Controller
     public function create()
     {
         //
-        return view('student.create');
     }
 
     /**
@@ -39,63 +36,50 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         //
-        // return $request->url; // certain object
-        // dd($request->all()); // semua object dalm form
-
-        return redirect()->route('student.index');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(subject $subject)
     {
         //
-        return 'show ui ' .$id;
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(subject $subject)
     {
         //
-        return view('student.edit');
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, subject $subject)
     {
         //
-        return $request->name .' for student ID ' .$id;
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(subject $subject)
     {
         //
-    }
-
-    public function camelCase($id){
-        $primary_school = 'spm'; // snake_case
-        $primarySchool_grade = ''; //camel + snake case
-        $camelCase = '';  // camel case
     }
 }

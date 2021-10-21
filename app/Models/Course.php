@@ -23,7 +23,7 @@ class Course extends Model
         "updated_at"
     ];
 
-    // public function students(){
-    //     return $this->hasMany(Students::class);
-    // }
+    public function students(){
+        return $this->hasMany(Student::class);
+    }
 }

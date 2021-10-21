@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
-class StudentController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +16,8 @@ class StudentController extends Controller
     public function index()
     {
         //
-        $students = Student::all();
-        return view('student.index', compact('students'));
+        $users = User::all();
+        return view('user.index', compact('users'));
     }
 
     /**
@@ -27,7 +28,7 @@ class StudentController extends Controller
     public function create()
     {
         //
-        return view('student.create');
+        return view('user.create');
     }
 
     /**
@@ -39,10 +40,24 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         //
-        // return $request->url; // certain object
-        // dd($request->all()); // semua object dalm form
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->save();
 
-        return redirect()->route('student.index');
+        if(filled($request->profile_img)){ // store file
+            $path = $request->file('profile_img')
+            ->storeAs('public/files/user', $user->id.'.'.$request->file('profile_img')->extension());
+
+            $path = \Str::of($path)->replace('public','storage');
+
+            // update data suer
+            $user->profile_img = $path;
+            $user->save();
+        }
+
+        return redirect()->route('user.index');
     }
 
     /**
@@ -54,7 +69,6 @@ class StudentController extends Controller
     public function show($id)
     {
         //
-        return 'show ui ' .$id;
     }
 
     /**
@@ -66,7 +80,6 @@ class StudentController extends Controller
     public function edit($id)
     {
         //
-        return view('student.edit');
     }
 
     /**
@@ -79,7 +92,6 @@ class StudentController extends Controller
     public function update(Request $request, $id)
     {
         //
-        return $request->name .' for student ID ' .$id;
     }
 
     /**
@@ -91,11 +103,8 @@ class StudentController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function camelCase($id){
-        $primary_school = 'spm'; // snake_case
-        $primarySchool_grade = ''; //camel + snake case
-        $camelCase = '';  // camel case
+        $user = User::find($id);
+        $user->delete();
+        return redirect()->route('user.index')->with('successMessage', 'Successfully delete record');
     }
 }
