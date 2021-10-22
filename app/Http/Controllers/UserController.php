@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\StoreRequest;
 use App\Models\User;
+use App\Notifications\CreateUserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -37,9 +40,8 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        //
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
@@ -57,7 +59,13 @@ class UserController extends Controller
             $user->save();
         }
 
-        return redirect()->route('user.index');
+        $users = User::query()->whereHas('roles', function($q){
+            $q->where('name', 'superadmin');
+        })->get();
+
+        \Notification::send($users, new CreateUserNotification());
+
+        return redirect()->route('user.index')->with('successMessage','Rekod Berjaya Disimpan');
     }
 
     /**
